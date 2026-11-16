@@ -143,7 +143,12 @@ class Gestore:
             "consumo_abituale": _arrotonda(abituale),
             "consumo": _arrotonda(e.get("consumo")),
             "consumo_definitivo": e.get("consumo_definitivo", False),
-            "variazione": _arrotonda(risultato.variazione, 1),
+            # Con segno, come il sensore: negativa se il consumo è sceso.
+            "variazione": _arrotonda(
+                -risultato.variazione if risultato.variazione is not None and e["tipo"] == calcolo.ENERGY_BREAK
+                else risultato.variazione,
+                1,
+            ),
             "premio": _arrotonda(risultato.premio, 3 if e["tipo"] == calcolo.POWER_UP else 2),
             "esito_octopus": e.get("esito_octopus"),
         }
