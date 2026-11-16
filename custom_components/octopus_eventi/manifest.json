@@ -1,0 +1,13 @@
+{
+  "domain": "octopus_eventi",
+  "name": "Octopus eventi",
+  "codeowners": ["@Menelao147"],
+  "config_flow": true,
+  "dependencies": ["recorder"],
+  "documentation": "https://github.com/Menelao147/ha-octopus-events",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/Menelao147/ha-octopus-events/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

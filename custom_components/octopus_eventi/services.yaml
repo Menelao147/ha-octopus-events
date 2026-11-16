@@ -1,0 +1,63 @@
+aggiungi_evento:
+  fields:
+    tipo:
+      required: true
+      selector:
+        select:
+          translation_key: tipo
+          options:
+            - energy_break
+            - power_up
+    inizio:
+      required: true
+      selector:
+        datetime:
+    fine:
+      required: true
+      selector:
+        datetime:
+    soglie:
+      example: "50:2"
+      selector:
+        text:
+    adesione_entro:
+      selector:
+        datetime:
+    note:
+      selector:
+        text:
+rimuovi_evento:
+  fields:
+    id:
+      required: true
+      selector:
+        text:
+ricalcola:
+  fields:
+    id:
+      selector:
+        text:
+registra_esito_octopus:
+  fields:
+    id:
+      required: true
+      selector:
+        text:
+    variazione:
+      selector:
+        number:
+          min: -100
+          max: 10000
+          unit_of_measurement: "%"
+          mode: box
+    premio:
+      selector:
+        number:
+          min: 0
+          max: 1000
+          step: 0.001
+          mode: box
+    note:
+      selector:
+        text:
+elenco_eventi:

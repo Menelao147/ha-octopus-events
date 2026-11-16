@@ -1,0 +1,159 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Octopus eventi",
+        "description": "Scegli il sensore dell'energia prelevata dalla rete (kWh, cumulativo). Serve lo storico orario: il sensore deve avere le statistiche a lungo termine.",
+        "data": {
+          "sensore_energia": "Energia prelevata dalla rete"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Octopus eventi è già configurata"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opzioni",
+        "data": {
+          "escludi_giorni_eventi": "Escludi dalla media i giorni con altri eventi",
+          "festivi_extra": "Festivi in più (MM-GG, separati da virgola)"
+        },
+        "data_description": {
+          "escludi_giorni_eventi": "Il regolamento lo prevede, ma nei Power Up di maggio 2026 Octopus non lo ha fatto.",
+          "festivi_extra": "Per esempio il santo patrono: 12-07"
+        }
+      }
+    },
+    "error": {
+      "festivi_non_validi": "Formato non valido: usa MM-GG, per esempio 12-07"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "stato": {
+        "name": "Stato",
+        "state": {
+          "nessuno": "Nessun evento",
+          "programmato": "Programmato",
+          "in_corso": "In corso",
+          "concluso": "Concluso"
+        }
+      },
+      "inizio": {
+        "name": "Inizio"
+      },
+      "fine": {
+        "name": "Fine"
+      },
+      "consumo_abituale": {
+        "name": "Consumo abituale"
+      },
+      "consumo": {
+        "name": "Consumo durante l'evento"
+      },
+      "variazione": {
+        "name": "Variazione"
+      },
+      "sconto_stimato": {
+        "name": "Sconto stimato"
+      },
+      "energia_gratuita": {
+        "name": "Energia gratuita"
+      }
+    },
+    "binary_sensor": {
+      "in_corso": {
+        "name": "Evento in corso"
+      }
+    }
+  },
+  "selector": {
+    "tipo": {
+      "options": {
+        "energy_break": "Energy Break",
+        "power_up": "Power Up"
+      }
+    }
+  },
+  "services": {
+    "aggiungi_evento": {
+      "name": "Aggiungi evento",
+      "description": "Aggiunge un Energy Break o un Power Up annunciato da Octopus. Se si sovrappone a un evento già inserito, lo aggiorna.",
+      "fields": {
+        "tipo": {
+          "name": "Tipo",
+          "description": "Energy Break (consumare meno) o Power Up (consumare di più)."
+        },
+        "inizio": {
+          "name": "Inizio",
+          "description": "Ora intera."
+        },
+        "fine": {
+          "name": "Fine",
+          "description": "Ora intera."
+        },
+        "soglie": {
+          "name": "Soglie",
+          "description": "Solo Energy Break: riduzione in % e sconto in euro, per esempio 50:2 oppure 20:1, 50:3."
+        },
+        "adesione_entro": {
+          "name": "Adesione entro",
+          "description": "Termine per confermare la partecipazione dal modulo dell'email."
+        },
+        "note": {
+          "name": "Note",
+          "description": "Testo libero."
+        }
+      }
+    },
+    "rimuovi_evento": {
+      "name": "Rimuovi evento",
+      "description": "Toglie un evento.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Attributo id del sensore Stato."
+        }
+      }
+    },
+    "ricalcola": {
+      "name": "Ricalcola",
+      "description": "Ricalcola consumo abituale e consumo di un evento, o di tutti.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Vuoto per tutti gli eventi."
+        }
+      }
+    },
+    "registra_esito_octopus": {
+      "name": "Registra esito di Octopus",
+      "description": "Salva il risultato comunicato da Octopus, per confrontarlo con il calcolo.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Evento."
+        },
+        "variazione": {
+          "name": "Variazione",
+          "description": "In %, negativa se ridotto."
+        },
+        "premio": {
+          "name": "Premio",
+          "description": "Euro (Energy Break) o kWh gratuiti (Power Up)."
+        },
+        "note": {
+          "name": "Note",
+          "description": "Testo libero."
+        }
+      }
+    },
+    "elenco_eventi": {
+      "name": "Elenco eventi",
+      "description": "Restituisce tutti gli eventi con i calcoli."
+    }
+  }
+}

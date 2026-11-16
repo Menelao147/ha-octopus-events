@@ -1,0 +1,159 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Octopus events",
+        "description": "Choose the grid import energy sensor (kWh, cumulative). Hourly long-term statistics are required.",
+        "data": {
+          "sensore_energia": "Grid import energy"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Octopus events is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "data": {
+          "escludi_giorni_eventi": "Exclude days with previous events from the baseline",
+          "festivi_extra": "Extra holidays (MM-DD, comma separated)"
+        },
+        "data_description": {
+          "escludi_giorni_eventi": "Required by the rules, but Octopus did not do it in the May 2026 Power Ups.",
+          "festivi_extra": "For example the local patron saint: 12-07"
+        }
+      }
+    },
+    "error": {
+      "festivi_non_validi": "Invalid format: use MM-DD, e.g. 12-07"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "stato": {
+        "name": "Status",
+        "state": {
+          "nessuno": "No event",
+          "programmato": "Scheduled",
+          "in_corso": "In progress",
+          "concluso": "Ended"
+        }
+      },
+      "inizio": {
+        "name": "Start"
+      },
+      "fine": {
+        "name": "End"
+      },
+      "consumo_abituale": {
+        "name": "Baseline consumption"
+      },
+      "consumo": {
+        "name": "Event consumption"
+      },
+      "variazione": {
+        "name": "Change"
+      },
+      "sconto_stimato": {
+        "name": "Estimated discount"
+      },
+      "energia_gratuita": {
+        "name": "Free energy"
+      }
+    },
+    "binary_sensor": {
+      "in_corso": {
+        "name": "Event in progress"
+      }
+    }
+  },
+  "selector": {
+    "tipo": {
+      "options": {
+        "energy_break": "Energy Break",
+        "power_up": "Power Up"
+      }
+    }
+  },
+  "services": {
+    "aggiungi_evento": {
+      "name": "Add event",
+      "description": "Adds an Energy Break or Power Up announced by Octopus. Updates an overlapping existing event.",
+      "fields": {
+        "tipo": {
+          "name": "Type",
+          "description": "Energy Break (use less) or Power Up (use more)."
+        },
+        "inizio": {
+          "name": "Start",
+          "description": "Full hour."
+        },
+        "fine": {
+          "name": "End",
+          "description": "Full hour."
+        },
+        "soglie": {
+          "name": "Thresholds",
+          "description": "Energy Break only: reduction % and discount in euro, e.g. 50:2 or 20:1, 50:3."
+        },
+        "adesione_entro": {
+          "name": "Opt-in deadline",
+          "description": "Deadline to confirm participation via the email form."
+        },
+        "note": {
+          "name": "Notes",
+          "description": "Free text."
+        }
+      }
+    },
+    "rimuovi_evento": {
+      "name": "Remove event",
+      "description": "Removes an event.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "id attribute of the Status sensor."
+        }
+      }
+    },
+    "ricalcola": {
+      "name": "Recalculate",
+      "description": "Recalculates baseline and consumption of one event, or all.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Empty for all events."
+        }
+      }
+    },
+    "registra_esito_octopus": {
+      "name": "Record Octopus result",
+      "description": "Stores the result reported by Octopus, to compare it with the calculation.",
+      "fields": {
+        "id": {
+          "name": "ID",
+          "description": "Event."
+        },
+        "variazione": {
+          "name": "Change",
+          "description": "In %, negative if reduced."
+        },
+        "premio": {
+          "name": "Reward",
+          "description": "Euro (Energy Break) or free kWh (Power Up)."
+        },
+        "note": {
+          "name": "Notes",
+          "description": "Free text."
+        }
+      }
+    },
+    "elenco_eventi": {
+      "name": "List events",
+      "description": "Returns all events with calculations."
+    }
+  }
+}
