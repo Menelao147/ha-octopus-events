@@ -62,6 +62,17 @@
       },
       "energia_gratuita": {
         "name": "Free energy"
+      },
+      "rispetto_media": {
+        "name": "Share of baseline"
+      },
+      "tipo": {
+        "name": "Type",
+        "state": {
+          "energy_break": "Energy Break",
+          "power_up": "Power Up",
+          "nessuno": "No event"
+        }
       }
     },
     "binary_sensor": {

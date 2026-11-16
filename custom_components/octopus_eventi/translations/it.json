@@ -62,6 +62,17 @@
       },
       "energia_gratuita": {
         "name": "Energia gratuita"
+      },
+      "rispetto_media": {
+        "name": "Rispetto alla media"
+      },
+      "tipo": {
+        "name": "Tipo",
+        "state": {
+          "energy_break": "Energy Break",
+          "power_up": "Power Up",
+          "nessuno": "Nessun evento"
+        }
       }
     },
     "binary_sensor": {

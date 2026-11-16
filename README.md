@@ -31,6 +31,8 @@ Tutte riguardano l'evento in corso; se non ce n'è uno, il prossimo; altrimenti 
 | `sensor.octopus_eventi_consumo_abituale` | kWh; attributi: giorni usati, giorni scartati, `obiettivi` (consumo massimo per ogni soglia) |
 | `sensor.octopus_eventi_consumo` | kWh consumati durante l'evento; attributo `definitivo` |
 | `sensor.octopus_eventi_variazione` | % rispetto alla media (negativa = consumo ridotto) |
+| `sensor.octopus_eventi_rispetto_media` | consumo in % della media (100 = uguale), per le barre |
+| `sensor.octopus_eventi_tipo` | `energy_break`, `power_up` o `nessuno` |
 | `sensor.octopus_eventi_sconto_stimato` | euro (solo Energy Break) |
 | `sensor.octopus_eventi_energia_gratuita` | kWh oltre la media (solo Power Up) |
 | `binary_sensor.octopus_eventi_in_corso` | acceso durante l'evento |

@@ -45,6 +45,11 @@ def _variazione(e: dict[str, Any] | None) -> float | None:
     return (consumo - abituale) / abituale * 100
 
 
+def _rispetto_media(e: dict[str, Any] | None) -> float | None:
+    v = _variazione(e)
+    return None if v is None else 100 + v
+
+
 def _data(e: dict[str, Any] | None, campo: str):
     return dt_util.parse_datetime(e[campo]) if e and e.get(campo) else None
 
@@ -60,6 +65,10 @@ DESCRIZIONI = [
         "consumo", lambda g, e: (e or {}).get("consumo"), SensorDeviceClass.ENERGY, UnitOfEnergy.KILO_WATT_HOUR, 3, "mdi:lightning-bolt"
     ),
     Descrizione("variazione", lambda g, e: _variazione(e), unita=PERCENTAGE, cifre=0, icona="mdi:percent"),
+    # Consumo come percentuale della media (100 = uguale): comodo per le barre delle dashboard.
+    Descrizione("rispetto_media", lambda g, e: _rispetto_media(e), unita=PERCENTAGE, cifre=0, icona="mdi:gauge"),
+    Descrizione("tipo", lambda g, e: e["tipo"] if e else "nessuno", SensorDeviceClass.ENUM, icona="mdi:flash",
+                opzioni=["energy_break", "power_up", "nessuno"]),
     Descrizione(
         "sconto_stimato",
         lambda g, e: _esito(g, e).premio if e and e["tipo"] == calcolo.ENERGY_BREAK else None,
