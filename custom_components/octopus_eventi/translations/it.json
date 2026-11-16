@@ -79,6 +79,45 @@
       "in_corso": {
         "name": "Evento in corso"
       }
+    },
+    "select": {
+      "nuovo_tipo": {
+        "name": "Nuovo evento: tipo",
+        "state": {
+          "energy_break": "Energy Break",
+          "power_up": "Power Up"
+        }
+      },
+      "nuova_durata": {
+        "name": "Nuovo evento: durata",
+        "state": {
+          "1": "1 ora",
+          "2": "2 ore",
+          "3": "3 ore",
+          "4": "4 ore"
+        }
+      }
+    },
+    "datetime": {
+      "nuovo_inizio": {
+        "name": "Nuovo evento: inizio"
+      },
+      "nuova_adesione": {
+        "name": "Nuovo evento: conferma entro"
+      }
+    },
+    "text": {
+      "nuove_soglie": {
+        "name": "Nuovo evento: soglie"
+      }
+    },
+    "button": {
+      "aggiungi": {
+        "name": "Aggiungi evento"
+      },
+      "annulla_prossimo": {
+        "name": "Annulla il prossimo evento"
+      }
     }
   },
   "selector": {

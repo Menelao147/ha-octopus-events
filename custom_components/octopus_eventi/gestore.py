@@ -53,6 +53,8 @@ class Gestore:
         self.sensore: str = entry.data[CONF_SENSORE]
         self._store: Store[dict[str, Any]] = Store(hass, STORE_VERSIONE, f"{STORE_CHIAVE}.{entry.entry_id}")
         self.eventi: list[dict[str, Any]] = []
+        # Evento in preparazione dalla dashboard (entità "nuovo ..."): resta salvato anche dopo un riavvio.
+        self.bozza: dict[str, Any] = {}
         self._annulla: list = []
         self._in_lavorazione: set[str] = set()
 
@@ -81,6 +83,9 @@ class Gestore:
     async def async_avvia(self) -> None:
         dati = await self._store.async_load() or {}
         self.eventi = sorted(dati.get("eventi", []), key=lambda e: e["inizio"])
+        self.bozza = dati.get("bozza") or self._bozza_iniziale()
+        if _ts(self.bozza["inizio"]) <= dt_util.now():
+            self.bozza = self._bozza_iniziale()
         self._annulla.append(async_track_time_interval(self.hass, self._async_giro, timedelta(minutes=1)))
         self._annulla.append(async_track_state_change_event(self.hass, [self.sensore], self._sensore_cambiato))
         self.hass.async_create_task(self._async_giro(dt_util.utcnow()))
@@ -92,7 +97,58 @@ class Gestore:
         await self._store.async_save(self._dati())
 
     def _dati(self) -> dict[str, Any]:
-        return {"eventi": self.eventi}
+        return {"eventi": self.eventi, "bozza": self.bozza}
+
+    # ---------- evento in preparazione ----------
+
+    @staticmethod
+    def _bozza_iniziale() -> dict[str, Any]:
+        domani = dt_util.start_of_local_day(dt_util.now().date() + timedelta(days=1))
+        inizio = domani.replace(hour=19)
+        return {
+            "tipo": calcolo.ENERGY_BREAK,
+            "inizio": inizio.isoformat(),
+            "durata": 1,
+            "soglie": "50:2",
+            "adesione": (inizio - timedelta(hours=4)).isoformat(),
+        }
+
+    def imposta_bozza(self, campo: str, valore: Any) -> None:
+        if campo == "inizio":
+            # Octopus usa i consumi orari: l'inizio è sempre un'ora intera.
+            inizio = dt_util.as_local(valore).replace(minute=0, second=0, microsecond=0)
+            self.bozza["inizio"] = inizio.isoformat()
+            adesione = _ts(self.bozza.get("adesione"))
+            if adesione is None or adesione >= inizio or adesione < dt_util.now():
+                self.bozza["adesione"] = (inizio - timedelta(hours=4)).isoformat()
+        elif campo == "adesione":
+            self.bozza["adesione"] = dt_util.as_local(valore).replace(second=0, microsecond=0).isoformat()
+        else:
+            self.bozza[campo] = valore
+        self._salva()
+
+    async def async_aggiungi_bozza(self) -> dict[str, Any]:
+        from . import soglie_da_testo  # import qui: __init__ importa questo modulo
+
+        inizio = _ts(self.bozza["inizio"])
+        if inizio <= dt_util.now():
+            raise ServiceValidationError("L'inizio del nuovo evento è già passato")
+        soglie = soglie_da_testo(self.bozza["soglie"]) if self.bozza["tipo"] == calcolo.ENERGY_BREAK else []
+        adesione = _ts(self.bozza.get("adesione"))
+        return await self.async_aggiungi(
+            self.bozza["tipo"],
+            inizio,
+            inizio + timedelta(hours=int(self.bozza["durata"])),
+            soglie,
+            adesione if adesione and dt_util.now() < adesione < inizio else None,
+        )
+
+    async def async_annulla_prossimo(self) -> None:
+        ora = dt_util.now()
+        futuri = [e for e in self.eventi if _ts(e["inizio"]) > ora]
+        if not futuri:
+            raise ServiceValidationError("Non c'è nessun evento in programma")
+        await self.async_rimuovi(futuri[0]["id"])
 
     def _salva(self) -> None:
         self._store.async_delay_save(self._dati, 2)

@@ -37,6 +37,20 @@ Tutte riguardano l'evento in corso; se non ce n'è uno, il prossimo; altrimenti 
 | `sensor.octopus_eventi_energia_gratuita` | kWh oltre la media (solo Power Up) |
 | `binary_sensor.octopus_eventi_in_corso` | acceso durante l'evento |
 
+### Inserire un evento dalla dashboard
+
+Octopus annuncia gli eventi per email; l'integrazione non legge la posta. Per inserirli senza passare dai servizi:
+
+| Entità | Contenuto |
+|---|---|
+| `select.octopus_eventi_nuovo_tipo` | Energy Break o Power Up |
+| `datetime.octopus_eventi_nuovo_inizio` | inizio, arrotondato all'ora intera |
+| `select.octopus_eventi_nuova_durata` | 1, 2, 3 o 4 ore |
+| `text.octopus_eventi_nuove_soglie` | solo Energy Break: `50:2` oppure `20:1, 50:3` |
+| `datetime.octopus_eventi_nuova_adesione` | termine per confermare la partecipazione dal modulo dell'email |
+| `button.octopus_eventi_aggiungi` | aggiunge l'evento (se si sovrappone a uno esistente, lo aggiorna) |
+| `button.octopus_eventi_annulla_prossimo` | toglie il prossimo evento in programma |
+
 Eventi sul bus per le automazioni: `octopus_eventi_inizio` e `octopus_eventi_fine`, con il riepilogo dell'evento (a fine evento, quando il consumo è definitivo).
 
 ## Servizi

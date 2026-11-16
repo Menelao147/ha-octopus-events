@@ -16,7 +16,14 @@ from . import calcolo
 from .const import DOMAIN
 from .gestore import Gestore
 
-PIATTAFORME = [Platform.BINARY_SENSOR, Platform.SENSOR]
+PIATTAFORME = [
+    Platform.BINARY_SENSOR,
+    Platform.BUTTON,
+    Platform.DATETIME,
+    Platform.SELECT,
+    Platform.SENSOR,
+    Platform.TEXT,
+]
 
 type OctopusEventiConfigEntry = ConfigEntry[Gestore]
 
