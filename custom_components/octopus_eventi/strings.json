@@ -96,6 +96,9 @@
           "3": "3 hours",
           "4": "4 hours"
         }
+      },
+      "evento_mostrato": {
+        "name": "Event shown"
       }
     },
     "datetime": {

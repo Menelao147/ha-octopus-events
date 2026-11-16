@@ -55,6 +55,8 @@ class Gestore:
         self.eventi: list[dict[str, Any]] = []
         # Evento in preparazione dalla dashboard (entità "nuovo ..."): resta salvato anche dopo un riavvio.
         self.bozza: dict[str, Any] = {}
+        # Evento concluso scelto per i grafici dello storico (id); None = il più recente.
+        self.mostrato: str | None = None
         self._annulla: list = []
         self._in_lavorazione: set[str] = set()
 
@@ -84,6 +86,7 @@ class Gestore:
         dati = await self._store.async_load() or {}
         self.eventi = sorted(dati.get("eventi", []), key=lambda e: e["inizio"])
         self.bozza = dati.get("bozza") or self._bozza_iniziale()
+        self.mostrato = dati.get("mostrato")
         if _ts(self.bozza["inizio"]) <= dt_util.now():
             self.bozza = self._bozza_iniziale()
         self._annulla.append(async_track_time_interval(self.hass, self._async_giro, timedelta(minutes=1)))
@@ -97,7 +100,22 @@ class Gestore:
         await self._store.async_save(self._dati())
 
     def _dati(self) -> dict[str, Any]:
-        return {"eventi": self.eventi, "bozza": self.bozza}
+        return {"eventi": self.eventi, "bozza": self.bozza, "mostrato": self.mostrato}
+
+    # ---------- evento concluso da mostrare ----------
+
+    def conclusi(self) -> list[dict[str, Any]]:
+        """Eventi conclusi, dal più recente."""
+        ora = dt_util.now()
+        return [e for e in reversed(self.eventi) if _ts(e["fine"]) <= ora]
+
+    def evento_mostrato(self) -> dict[str, Any] | None:
+        conclusi = self.conclusi()
+        return next((e for e in conclusi if e["id"] == self.mostrato), conclusi[0] if conclusi else None)
+
+    def scegli_mostrato(self, id_evento: str) -> None:
+        self.mostrato = id_evento
+        self._salva()
 
     # ---------- evento in preparazione ----------
 

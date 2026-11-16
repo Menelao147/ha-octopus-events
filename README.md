@@ -51,6 +51,10 @@ Octopus annuncia gli eventi per email; l'integrazione non legge la posta. Per in
 | `button.octopus_eventi_aggiungi` | aggiunge l'evento (se si sovrappone a uno esistente, lo aggiorna) |
 | `button.octopus_eventi_annulla_prossimo` | toglie il prossimo evento in programma |
 
+### Eventi passati
+
+`select.octopus_eventi_evento_mostrato` elenca gli eventi conclusi (dal più recente); negli attributi i dati di quello scelto (orari, consumo abituale, consumo, variazione, premio, obiettivi, esito di Octopus), per i grafici dello storico.
+
 Eventi sul bus per le automazioni: `octopus_eventi_inizio` e `octopus_eventi_fine`, con il riepilogo dell'evento (a fine evento, quando il consumo è definitivo).
 
 ## Servizi
